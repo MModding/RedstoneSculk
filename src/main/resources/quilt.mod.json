@@ -2,10 +2,10 @@
 	"schema_version": 1,
 	"quilt_loader": {
 		"group": "com.mmodding",
-		"id": "redstone_skulk",
+		"id": "redstone_sculk",
 		"version": "${version}",
 		"metadata": {
-			"name": "Redstone Skulk",
+			"name": "Redstone Sculk",
 			"description": "None",
 			"contributors": {
 				"MModding Team": "Owner",
@@ -13,15 +13,15 @@
 			},
 			"contact": {
 				"homepage": "https://mmodding.github.io/",
-				"issues": "https://github.com/MModding/RedstoneSkulk/issues",
-				"sources": "https://github.com/MModding/RedstoneSkulk/"
+				"issues": "https://github.com/MModding/RedstoneSculk/issues",
+				"sources": "https://github.com/MModding/RedstoneSculk/"
 			},
-			"icon": "assets/redstone_skulk/icon.png"
+			"icon": "assets/redstone_sculk/icon.png"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
-			"init": "com.mmodding.redstone_skulk.RedstoneSkulk",
-			"client_init": "com.mmodding.redstone_skulk.client.RedstoneSkulkClient"
+			"init": "com.mmodding.redstone_sculk.RedstoneSculk",
+			"client_init": "com.mmodding.redstone_sculk.client.RedstoneSculkClient"
 		},
 		"depends": [
 			{
@@ -42,5 +42,5 @@
 			}
 		]
 	},
-	"mixin": "redstone_skulk.mixins.json"
+	"mixin": "redstone_sculk.mixins.json"
 }

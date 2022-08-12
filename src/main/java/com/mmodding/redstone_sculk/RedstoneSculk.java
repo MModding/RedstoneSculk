@@ -1,15 +1,15 @@
-package com.mmodding.redstone_skulk;
+package com.mmodding.redstone_sculk;
 
-import com.mmodding.redstone_skulk.init.*;
 import com.mmodding.mmodding_lib.library.base.MModdingModContainer;
 import com.mmodding.mmodding_lib.library.base.MModdingModInitializer;
 import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
+import com.mmodding.redstone_sculk.init.Blocks;
 import org.quiltmc.loader.api.ModContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedstoneSkulk implements MModdingModInitializer {
+public class RedstoneSculk implements MModdingModInitializer {
 
 	public static MModdingModContainer mod;
 
@@ -23,6 +23,6 @@ public class RedstoneSkulk implements MModdingModInitializer {
 	@Override
 	public void onInitialize(ModContainer mod) {
 		MModdingModInitializer.super.onInitialize(mod);
-		RedstoneSkulk.mod = MModdingModContainer.from(mod);
+		RedstoneSculk.mod = MModdingModContainer.from(mod);
 	}
 }
