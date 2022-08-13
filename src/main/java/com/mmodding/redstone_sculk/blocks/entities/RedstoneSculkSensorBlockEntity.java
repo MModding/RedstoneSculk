@@ -49,9 +49,7 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 
 	@Override
 	public boolean accepts(World world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity) {
-		boolean bl = event == GameEvent.BLOCK_DESTROY && pos.equals(this.getPos());
-		boolean bl2 = event == GameEvent.BLOCK_PLACE && pos.equals(this.getPos());
-		return !bl && !bl2 && RedstoneSculkSensorBlock.isInactive(this.getCachedState());
+		return RedstoneSculkSensorBlock.isInactive(this.getCachedState()) && world.isReceivingRedstonePower(this.getPos());
 	}
 
 	@Override
