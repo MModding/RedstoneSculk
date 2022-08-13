@@ -39,7 +39,7 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 		nbt.putInt("last_vibration_frequency", this.lastVibrationFrequency);
 	}
 
-	public RedstoneSculkSensorListener getListener() {
+	public RedstoneSculkSensorListener getEventListener() {
 		return this.listener;
 	}
 

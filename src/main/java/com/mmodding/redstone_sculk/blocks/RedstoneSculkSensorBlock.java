@@ -1,11 +1,12 @@
 package com.mmodding.redstone_sculk.blocks;
 
 import com.mmodding.mmodding_lib.library.blocks.CustomBlockWithEntity;
+import com.mmodding.redstone_sculk.blocks.entities.RedstoneSculkSensorBlockEntity;
+import com.mmodding.redstone_sculk.init.BlockEntities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.SculkSensorBlockEntity;
 import net.minecraft.block.enums.SculkSensorPhase;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
@@ -86,7 +87,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
 		if (!world.isClient() && !state.isOf(oldState.getBlock())) {
 			if (state.get(POWER) > 0 && !world.getBlockTickScheduler().isQueued(pos, this)) {
-				world.setBlockState(pos, state.with(POWER, Integer.valueOf(0)), 18);
+				world.setBlockState(pos, state.with(POWER, 0), 18);
 			}
 
 			world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), 1);
@@ -123,20 +124,20 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	@Nullable
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new SculkSensorBlockEntity(pos, state);
+		return new RedstoneSculkSensorBlockEntity(pos, state);
 	}
 
 	@Nullable
 	@Override
 	public <T extends BlockEntity> GameEventListener getGameEventListener(World world, T blockEntity) {
-		return blockEntity instanceof SculkSensorBlockEntity ? ((SculkSensorBlockEntity) blockEntity).getEventListener() : null;
+		return blockEntity instanceof RedstoneSculkSensorBlockEntity ? ((RedstoneSculkSensorBlockEntity) blockEntity).getEventListener() : null;
 	}
 
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return !world.isClient
-				? checkType(type, BlockEntityType.SCULK_SENSOR, (worldx, pos, statex, blockEntity) -> blockEntity.getEventListener().tick(worldx))
+				? checkType(type, BlockEntities.REDSTONE_SCULK_SENSOR_BLOCK_ENTITY.getBlockEntityTypeIfCreated(), (worldx, pos, statex, blockEntity) -> blockEntity.getEventListener().tick(worldx))
 				: null;
 	}
 
@@ -169,7 +170,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	}
 
 	public static void setCooldown(World world, BlockPos pos, BlockState state) {
-		world.setBlockState(pos, state.with(REDSTONE_SCULK_SENSOR_PHASE, SculkSensorPhase.COOLDOWN).with(POWER, Integer.valueOf(0)), 3);
+		world.setBlockState(pos, state.with(REDSTONE_SCULK_SENSOR_PHASE, SculkSensorPhase.COOLDOWN).with(POWER, 0), 3);
 		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), 1);
 		if (!state.get(WATERLOGGED)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_SCULK_SENSOR_CLICKING_STOP, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
@@ -224,7 +225,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	@Override
 	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity instanceof SculkSensorBlockEntity sculkSensorBlockEntity) {
+		if (blockEntity instanceof RedstoneSculkSensorBlockEntity sculkSensorBlockEntity) {
 			return getPhase(state) == SculkSensorPhase.ACTIVE ? sculkSensorBlockEntity.getLastVibrationFrequency() : 0;
 		} else {
 			return 0;
