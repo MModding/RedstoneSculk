@@ -11,6 +11,7 @@ import net.minecraft.block.enums.SculkSensorPhase;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.particle.DustColorTransitionParticleEffect;
 import net.minecraft.server.world.ServerWorld;
@@ -42,8 +43,8 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	protected static final VoxelShape OUTLINE_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
 	private final int range;
 
-	public RedstoneSculkSensorBlock(AbstractBlock.Settings settings, int i) {
-		super(settings);
+	public RedstoneSculkSensorBlock(AbstractBlock.Settings settings, boolean hasItem, ItemGroup itemGroup, int i) {
+		super(settings, hasItem, itemGroup);
 		this.setDefaultState(
 				this.stateManager
 						.getDefaultState()

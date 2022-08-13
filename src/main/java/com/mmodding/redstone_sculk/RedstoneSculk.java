@@ -3,6 +3,7 @@ package com.mmodding.redstone_sculk;
 import com.mmodding.mmodding_lib.library.base.MModdingModContainer;
 import com.mmodding.mmodding_lib.library.base.MModdingModInitializer;
 import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
+import com.mmodding.redstone_sculk.init.BlockEntities;
 import com.mmodding.redstone_sculk.init.Blocks;
 import org.quiltmc.loader.api.ModContainer;
 
@@ -17,6 +18,7 @@ public class RedstoneSculk implements MModdingModInitializer {
 	public List<ElementsInitializer> getElementsInitializers() {
 		List<ElementsInitializer> initializers = new ArrayList<>();
 		initializers.add(new Blocks());
+		initializers.add(new BlockEntities());
 		return initializers;
 	}
 

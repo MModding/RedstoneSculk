@@ -9,6 +9,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.enums.SculkSensorPhase;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.sound.BlockSoundGroup;
 
 public class Blocks implements ElementsInitializer, ClientElementsInitializer {
@@ -19,6 +20,8 @@ public class Blocks implements ElementsInitializer, ClientElementsInitializer {
 					.sounds(BlockSoundGroup.SCULK_SENSOR)
 					.luminance(state -> 1)
 					.emissiveLighting((state, world, pos) -> RedstoneSculkSensorBlock.getPhase(state) == SculkSensorPhase.ACTIVE),
+			true,
+			ItemGroup.BUILDING_BLOCKS,
 			8
 	);
 
