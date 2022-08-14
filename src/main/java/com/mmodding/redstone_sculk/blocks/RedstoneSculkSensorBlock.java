@@ -22,9 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -42,11 +39,8 @@ public class RedstoneSculkSensorBlock extends SculkSensorBlock implements BlockR
 
 	private BlockItem item = null;
 
-	public static final int ACTIVE_TICKS = 40;
 	public static final Object2IntMap<GameEvent> FREQUENCIES = Object2IntMaps.unmodifiable(Util.make(new Object2IntOpenHashMap<>(), map ->
 			map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15)));
-	public static final IntProperty POWER = Properties.POWER;
-	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
 	public RedstoneSculkSensorBlock(AbstractBlock.Settings settings, boolean hasItem, ItemGroup itemGroup, int i) {
 		this(settings, hasItem, itemGroup != null ? new QuiltItemSettings().group(itemGroup) : new QuiltItemSettings(), i);
