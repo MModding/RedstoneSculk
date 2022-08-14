@@ -4,6 +4,9 @@ import com.mmodding.mmodding_lib.library.blocks.CustomBlockWithEntity;
 import com.mmodding.redstone_sculk.blocks.entities.RedstoneSculkSensorBlockEntity;
 import com.mmodding.redstone_sculk.init.BlockEntities;
 import com.mmodding.redstone_sculk.init.GameEvents;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -23,12 +26,14 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.listener.GameEventListener;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +43,9 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 
 	public static final int ACTIVE_TICKS = 40;
 	public static final int COOLDOWN_TICKS = 1;
+	public static final Object2IntMap<GameEvent> FREQUENCIES = Object2IntMaps.unmodifiable(Util.make(new Object2IntOpenHashMap<>(), map -> {
+		map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 21);
+	}));
 	public static final EnumProperty<SculkSensorPhase> REDSTONE_SCULK_SENSOR_PHASE = EnumProperty.of("redstone_sculk_sensor_phase", SculkSensorPhase.class);
 	public static final IntProperty POWER = Properties.POWER;
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;

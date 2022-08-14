@@ -57,7 +57,7 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 	public void accept(World world, GameEventListener listener, GameEvent event, int distance) {
 		BlockState blockState = this.getCachedState();
 		if (!world.isClient() && RedstoneSculkSensorBlock.isInactive(blockState)) {
-			this.lastVibrationFrequency = 0;
+			this.lastVibrationFrequency = RedstoneSculkSensorBlock.FREQUENCIES.getInt(event);
 			RedstoneSculkSensorBlock.setActive(world, this.pos, blockState, world.getReceivedRedstonePower(pos));
 		}
 	}
