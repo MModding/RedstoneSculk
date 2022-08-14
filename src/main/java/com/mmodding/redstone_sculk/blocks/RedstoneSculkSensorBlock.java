@@ -44,7 +44,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	public static final int ACTIVE_TICKS = 40;
 	public static final int COOLDOWN_TICKS = 1;
 	public static final Object2IntMap<GameEvent> FREQUENCIES = Object2IntMaps.unmodifiable(Util.make(new Object2IntOpenHashMap<>(), map -> {
-		map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 21);
+		map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15);
 	}));
 	public static final EnumProperty<SculkSensorPhase> REDSTONE_SCULK_SENSOR_PHASE = EnumProperty.of("redstone_sculk_sensor_phase", SculkSensorPhase.class);
 	public static final IntProperty POWER = Properties.POWER;
@@ -195,7 +195,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 
 	public static void setCooldown(World world, BlockPos pos, BlockState state) {
 		world.setBlockState(pos, state.with(REDSTONE_SCULK_SENSOR_PHASE, SculkSensorPhase.COOLDOWN).with(POWER, 0), 3);
-		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), 1);
+		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), COOLDOWN_TICKS);
 		if (!state.get(WATERLOGGED)) {
 			world.playSound(null, pos, SoundEvents.BLOCK_SCULK_SENSOR_CLICKING_STOP, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
 		}
@@ -206,7 +206,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	public static void setActive(World world, BlockPos pos, BlockState state, int power) {
 		world.setBlockState(pos, state.with(REDSTONE_SCULK_SENSOR_PHASE, SculkSensorPhase.ACTIVE).with(POWER, power), 3);
 		world.emitGameEvent(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, pos);
-		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), 40);
+		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), ACTIVE_TICKS);
 		updateNeighbors(world, pos);
 		if (!state.get(WATERLOGGED)) {
 			world.playSound(

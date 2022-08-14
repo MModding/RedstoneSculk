@@ -32,6 +32,6 @@ public class RedstoneSculk implements MModdingModInitializer {
 		// GameEvents
 		GameEvents.registerGameEvents();
 
-		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 20);
+		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15);
 	}
 }
