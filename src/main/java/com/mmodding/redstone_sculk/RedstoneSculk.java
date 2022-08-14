@@ -5,6 +5,7 @@ import com.mmodding.mmodding_lib.library.base.MModdingModInitializer;
 import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
 import com.mmodding.redstone_sculk.init.BlockEntities;
 import com.mmodding.redstone_sculk.init.Blocks;
+import com.mmodding.redstone_sculk.init.GameEvents;
 import org.quiltmc.loader.api.ModContainer;
 
 import java.util.ArrayList;
@@ -26,5 +27,8 @@ public class RedstoneSculk implements MModdingModInitializer {
 	public void onInitialize(ModContainer mod) {
 		MModdingModInitializer.super.onInitialize(mod);
 		RedstoneSculk.mod = MModdingModContainer.from(mod);
+
+		// GameEvents
+		GameEvents.registerGameEvents();
 	}
 }

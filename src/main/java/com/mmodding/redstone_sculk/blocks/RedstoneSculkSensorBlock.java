@@ -3,6 +3,7 @@ package com.mmodding.redstone_sculk.blocks;
 import com.mmodding.mmodding_lib.library.blocks.CustomBlockWithEntity;
 import com.mmodding.redstone_sculk.blocks.entities.RedstoneSculkSensorBlockEntity;
 import com.mmodding.redstone_sculk.init.BlockEntities;
+import com.mmodding.redstone_sculk.init.GameEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -70,6 +71,20 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+	}
+
+	@Override
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+		if (!world.isClient) {
+			boolean bl = getPhase(state) == SculkSensorPhase.ACTIVE;
+			if (bl != world.isReceivingRedstonePower(pos)) {
+				if (bl) {
+					world.scheduleBlockTick(pos, this, 4);
+				} else {
+					setActive(world, pos, state, world.getReceivedRedstonePower(pos));
+				}
+			}
+		}
 	}
 
 	@Override
@@ -182,6 +197,7 @@ public class RedstoneSculkSensorBlock extends CustomBlockWithEntity implements W
 
 	public static void setActive(World world, BlockPos pos, BlockState state, int power) {
 		world.setBlockState(pos, state.with(REDSTONE_SCULK_SENSOR_PHASE, SculkSensorPhase.ACTIVE).with(POWER, power), 3);
+		world.emitGameEvent(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, pos);
 		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), 40);
 		updateNeighbors(world, pos);
 		if (!state.get(WATERLOGGED)) {

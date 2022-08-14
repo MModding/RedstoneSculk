@@ -2,13 +2,13 @@ package com.mmodding.redstone_sculk.blocks.entities;
 
 import com.mmodding.redstone_sculk.blocks.RedstoneSculkSensorBlock;
 import com.mmodding.redstone_sculk.init.BlockEntities;
+import com.mmodding.redstone_sculk.init.GameEvents;
 import com.mmodding.redstone_sculk.world.listener.RedstoneSculkSensorListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.event.BlockPositionSource;
 import net.minecraft.world.event.GameEvent;
@@ -49,7 +49,8 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 
 	@Override
 	public boolean accepts(World world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity) {
-		return RedstoneSculkSensorBlock.isInactive(this.getCachedState()) && world.isReceivingRedstonePower(this.getPos());
+		return RedstoneSculkSensorBlock.isInactive(this.getCachedState()) &&
+				event == GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE;
 	}
 
 	@Override
@@ -57,12 +58,7 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 		BlockState blockState = this.getCachedState();
 		if (!world.isClient() && RedstoneSculkSensorBlock.isInactive(blockState)) {
 			this.lastVibrationFrequency = 0;
-			RedstoneSculkSensorBlock.setActive(world, this.pos, blockState, getPower(distance, listener.getRange()));
+			RedstoneSculkSensorBlock.setActive(world, this.pos, blockState, world.getReceivedRedstonePower(pos));
 		}
-	}
-
-	public static int getPower(int distance, int range) {
-		double d = (double) distance / (double) range;
-		return Math.max(1, 15 - MathHelper.floor(d * 15.0));
 	}
 }
