@@ -1,14 +1,16 @@
 package com.mmodding.redstone_sculk.init;
 
+import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.event.GameEvent;
 
-public class GameEvents {
+public class GameEvents implements ElementsInitializer {
 
 	public static GameEvent REDSTONE_SCULK_SENSOR_ACTIVATE;
 
-	public static void registerGameEvents() {
-		REDSTONE_SCULK_SENSOR_ACTIVATE = register("redstone_sculk_sensor_activate");
+	@Override
+	public void register() {
+		REDSTONE_SCULK_SENSOR_ACTIVATE = register("redstone_sculk:redstone_sculk_sensor_activate");
 	}
 
 	private static GameEvent register(String id) {

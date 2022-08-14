@@ -20,6 +20,7 @@ public class RedstoneSculk implements MModdingModInitializer {
 	public List<ElementsInitializer> getElementsInitializers() {
 		List<ElementsInitializer> initializers = new ArrayList<>();
 		initializers.add(new Blocks());
+		initializers.add(new GameEvents());
 		initializers.add(new BlockEntities());
 		return initializers;
 	}
@@ -29,9 +30,6 @@ public class RedstoneSculk implements MModdingModInitializer {
 		MModdingModInitializer.super.onInitialize(mod);
 		RedstoneSculk.mod = MModdingModContainer.from(mod);
 
-		// GameEvents
-		GameEvents.registerGameEvents();
-
-		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15);
+		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 20);
 	}
 }
