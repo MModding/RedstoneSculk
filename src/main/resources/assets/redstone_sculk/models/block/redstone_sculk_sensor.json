@@ -1,11 +1,11 @@
 {
   "parent": "block/block",
   "textures": {
-    "bottom": "block/redstone_sculk_sensor_bottom",
-    "side": "block/redstone_sculk_sensor_side",
-    "tendrils": "block/redstone_sculk_sensor_tendril_inactive",
-    "top": "block/redstone_sculk_sensor_top",
-    "particle": "block/redstone_sculk_sensor_bottom"
+    "bottom": "redstone_sculk:block/redstone_sculk_sensor_bottom",
+    "side": "redstone_sculk:block/redstone_sculk_sensor_side",
+    "tendrils": "redstone_sculk:block/redstone_sculk_sensor_tendril_inactive",
+    "top": "redstone_sculk:block/redstone_sculk_sensor_top",
+    "particle": "redstone_sculk:block/redstone_sculk_sensor_bottom"
   },
   "elements": [
     {
