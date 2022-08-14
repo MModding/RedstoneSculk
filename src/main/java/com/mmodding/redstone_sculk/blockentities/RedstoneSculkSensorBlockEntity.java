@@ -1,4 +1,4 @@
-package com.mmodding.redstone_sculk.blocks.entities;
+package com.mmodding.redstone_sculk.blockentities;
 
 import com.mmodding.redstone_sculk.blocks.RedstoneSculkSensorBlock;
 import com.mmodding.redstone_sculk.init.BlockEntities;

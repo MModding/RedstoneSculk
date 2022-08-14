@@ -2,7 +2,7 @@ package com.mmodding.redstone_sculk.blocks;
 
 import com.mmodding.mmodding_lib.library.blocks.BlockRegistrable;
 import com.mmodding.mmodding_lib.library.blocks.BlockWithItem;
-import com.mmodding.redstone_sculk.blocks.entities.RedstoneSculkSensorBlockEntity;
+import com.mmodding.redstone_sculk.blockentities.RedstoneSculkSensorBlockEntity;
 import com.mmodding.redstone_sculk.init.BlockEntities;
 import com.mmodding.redstone_sculk.init.Blocks;
 import com.mmodding.redstone_sculk.init.GameEvents;
