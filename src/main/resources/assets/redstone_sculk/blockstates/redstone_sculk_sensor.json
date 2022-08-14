@@ -1,13 +1,13 @@
 {
   "variants": {
     "redstone_sculk_sensor_phase=active": {
-      "model": "minecraft:block/sculk_sensor_active"
+      "model": "redstone_sculk:block/redstone_sculk_sensor_active"
     },
     "redstone_sculk_sensor_phase=cooldown": {
-      "model": "minecraft:block/sculk_sensor_inactive"
+      "model": "redstone_sculk:block/redstone_sculk_sensor_inactive"
     },
     "redstone_sculk_sensor_phase=inactive": {
-      "model": "minecraft:block/sculk_sensor_inactive"
+      "model": "redstone_sculk:block/redstone_sculk_sensor_inactive"
     }
   }
 }

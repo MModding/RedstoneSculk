@@ -1,0 +1,6 @@
+{
+  "parent": "block/redstone_sculk_sensor",
+  "textures": {
+    "tendrils": "block/redstone_sculk_sensor_tendril_active"
+  }
+}
