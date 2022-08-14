@@ -14,7 +14,7 @@ import net.minecraft.sound.BlockSoundGroup;
 
 public class Blocks implements ElementsInitializer, ClientElementsInitializer {
 
-	public static final CustomBlockWithEntity REDSTONE_SCULK_SENSOR = new RedstoneSculkSensorBlock(
+	public static final RedstoneSculkSensorBlock REDSTONE_SCULK_SENSOR = new RedstoneSculkSensorBlock(
 			AbstractBlock.Settings.of(Material.SCULK, MapColor.CYAN)
 					.strength(1.5F)
 					.sounds(BlockSoundGroup.SCULK_SENSOR)
