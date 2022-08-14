@@ -1,6 +1,5 @@
 package com.mmodding.redstone_sculk.init;
 
-import com.mmodding.mmodding_lib.library.blocks.CustomBlockWithEntity;
 import com.mmodding.mmodding_lib.library.initializers.ClientElementsInitializer;
 import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
 import com.mmodding.redstone_sculk.Utils;
