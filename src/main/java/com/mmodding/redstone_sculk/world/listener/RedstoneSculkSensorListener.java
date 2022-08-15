@@ -20,6 +20,7 @@ import java.util.Optional;
 
 public class RedstoneSculkSensorListener implements GameEventListener {
 	protected final PositionSource positionSource;
+	protected BlockPos originSource;
 	protected final int range;
 	protected final RedstoneSculkSensorListener.Callback callback;
 	protected Optional<GameEvent> event = Optional.empty();
@@ -49,6 +50,10 @@ public class RedstoneSculkSensorListener implements GameEventListener {
 		return this.positionSource;
 	}
 
+	public BlockPos getOriginSource() {
+		return this.originSource;
+	}
+
 	@Override
 	public int getRange() {
 		return this.range;
@@ -56,6 +61,7 @@ public class RedstoneSculkSensorListener implements GameEventListener {
 
 	@Override
 	public boolean listen(World world, GameEvent event, @Nullable Entity entity, BlockPos pos) {
+		this.originSource = pos;
 		if (!this.shouldActivate(event, entity)) {
 			return false;
 		} else {
