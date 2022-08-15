@@ -3,6 +3,7 @@ package com.mmodding.redstone_sculk.init;
 import com.mmodding.mmodding_lib.library.initializers.ClientElementsInitializer;
 import com.mmodding.mmodding_lib.library.initializers.ElementsInitializer;
 import com.mmodding.redstone_sculk.Utils;
+import com.mmodding.redstone_sculk.blocks.BufferBlock;
 import com.mmodding.redstone_sculk.blocks.RedstoneSculkSensorBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.MapColor;
@@ -24,14 +25,24 @@ public class Blocks implements ElementsInitializer, ClientElementsInitializer {
 			8
 	);
 
+	public static final BufferBlock BUFFER = new BufferBlock(
+			AbstractBlock.Settings.of(Material.DECORATION)
+					.breakInstantly()
+					.sounds(BlockSoundGroup.WOOD),
+			true,
+			ItemGroup.REDSTONE
+	);
+
 	@Override
 	public void register() {
 		REDSTONE_SCULK_SENSOR.register(Utils.newIdentifier("redstone_sculk_sensor"));
+		BUFFER.register(Utils.newIdentifier("buffer"));
 	}
 
 	@Override
 	public void registerClient() {
 		REDSTONE_SCULK_SENSOR.cutout();
+		BUFFER.cutout();
 
 		REDSTONE_SCULK_SENSOR.translucent();
 	}
