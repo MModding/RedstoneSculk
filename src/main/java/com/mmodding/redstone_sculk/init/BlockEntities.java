@@ -7,12 +7,10 @@ import com.mmodding.redstone_sculk.blockentities.RedstoneSculkSensorBlockEntity;
 
 public class BlockEntities implements ElementsInitializer {
 
-	public static final CustomBlockEntityType<RedstoneSculkSensorBlockEntity> REDSTONE_SCULK_SENSOR = CustomBlockEntityType.create(
-		RedstoneSculkSensorBlockEntity::new, null, Blocks.REDSTONE_SCULK_SENSOR
-	);
+	public static final CustomBlockEntityType<RedstoneSculkSensorBlockEntity> REDSTONE_SCULK_SENSOR_BLOCK_ENTITY = new
+			CustomBlockEntityType<>(RedstoneSculkSensorBlockEntity::new, Blocks.REDSTONE_SCULK_SENSOR)
+			.createAndRegister(Utils.newIdentifier("redstone_sculk_sensor"));
 
 	@Override
-	public void register() {
-		Utils.newIdentifier("redstone_sculk_sensor");
-	}
+	public void register() {}
 }

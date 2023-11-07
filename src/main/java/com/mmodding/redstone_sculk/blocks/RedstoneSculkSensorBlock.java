@@ -20,7 +20,6 @@ import net.minecraft.block.enums.SculkSensorPhase;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Util;
@@ -41,7 +40,7 @@ public class RedstoneSculkSensorBlock extends SculkSensorBlock implements BlockR
 	private BlockItem item = null;
 
 	public static final Object2IntMap<GameEvent> FREQUENCIES = Object2IntMaps.unmodifiable(Util.make(new Object2IntOpenHashMap<>(), map ->
-		map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15)));
+			map.put(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15)));
 
 	public RedstoneSculkSensorBlock(AbstractBlock.Settings settings, boolean hasItem, ItemGroup itemGroup, int i) {
 		this(settings, hasItem, itemGroup != null ? new QuiltItemSettings().group(itemGroup) : new QuiltItemSettings(), i);
@@ -79,7 +78,7 @@ public class RedstoneSculkSensorBlock extends SculkSensorBlock implements BlockR
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> GameEventListener getGameEventListener(ServerWorld world, T blockEntity) {
+	public <T extends BlockEntity> GameEventListener getGameEventListener(World world, T blockEntity) {
 		return blockEntity instanceof RedstoneSculkSensorBlockEntity ? ((RedstoneSculkSensorBlockEntity) blockEntity).getEventListener() : null;
 	}
 
@@ -87,25 +86,25 @@ public class RedstoneSculkSensorBlock extends SculkSensorBlock implements BlockR
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return !world.isClient
-			? checkType(type, BlockEntities.REDSTONE_SCULK_SENSOR, (worldx, pos, statex, blockEntity) -> blockEntity.getEventListener().tick(worldx))
-			: null;
+				? checkType(type, BlockEntities.REDSTONE_SCULK_SENSOR_BLOCK_ENTITY.getBlockEntityTypeIfCreated(), (worldx, pos, statex, blockEntity) -> blockEntity.getEventListener().tick(worldx))
+				: null;
 	}
 
 	public static void setActive(World world, BlockPos pos, BlockState state, int power) {
 		world.setBlockState(pos, state.with(SCULK_SENSOR_PHASE, SculkSensorPhase.ACTIVE).with(POWER, power), 3);
-		world.emitGameEvent(null, GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, pos);
+		world.emitGameEvent(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, pos);
 		world.scheduleBlockTick(new BlockPos(pos), state.getBlock(), ACTIVE_TICKS);
 		updateNeighbors(world, pos);
 		if (!state.get(WATERLOGGED)) {
 			world.playSound(
-				null,
-				(double) pos.getX() + 0.5,
-				(double) pos.getY() + 0.5,
-				(double) pos.getZ() + 0.5,
-				SoundEvents.BLOCK_SCULK_SENSOR_CLICKING,
-				SoundCategory.BLOCKS,
-				1.0F,
-				world.random.nextFloat() * 0.2F + 0.8F
+					null,
+					(double) pos.getX() + 0.5,
+					(double) pos.getY() + 0.5,
+					(double) pos.getZ() + 0.5,
+					SoundEvents.BLOCK_SCULK_SENSOR_CLICKING,
+					SoundCategory.BLOCKS,
+					1.0F,
+					world.random.nextFloat() * 0.2F + 0.8F
 			);
 		}
 

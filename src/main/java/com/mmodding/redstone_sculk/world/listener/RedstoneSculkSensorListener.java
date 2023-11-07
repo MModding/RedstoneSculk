@@ -1,56 +1,48 @@
 package com.mmodding.redstone_sculk.world.listener;
 
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.particle.VibrationParticleEffect;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.GameEventTags;
-import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockStateRaycastContext;
+import net.minecraft.world.Vibration;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.PositionSource;
 import net.minecraft.world.event.listener.GameEventListener;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 public class RedstoneSculkSensorListener implements GameEventListener {
 	protected final PositionSource positionSource;
 	protected BlockPos originSource;
 	protected final int range;
 	protected final RedstoneSculkSensorListener.Callback callback;
-	@Nullable
-	protected RedstoneSculkSensorListener.RecievedEvent event;
-	protected float distance;
-	protected int delay;
+	protected Optional<GameEvent> event = Optional.empty();
+	protected int distance;
+	protected int delay = 0;
 
-	public RedstoneSculkSensorListener(PositionSource positionSource, int range, RedstoneSculkSensorListener.Callback callback) {
+	public RedstoneSculkSensorListener(PositionSource positionSource, int i, RedstoneSculkSensorListener.Callback callback) {
 		this.positionSource = positionSource;
-		this.range = range;
+		this.range = i;
 		this.callback = callback;
-		this.distance = 0.0F;
-		this.delay = 0;
 	}
 
 	public void tick(World world) {
-		if (world instanceof ServerWorld serverWorld) {
+		if (this.event.isPresent()) {
 			--this.delay;
 			if (this.delay <= 0) {
 				this.delay = 0;
-				this.callback.accept(serverWorld, this, new BlockPos(this.event.pos), this.event.gameEvent, this.event.getEntity(serverWorld).orElse(null), this.event.getProjectileOwner(serverWorld).orElse(null), this.distance);
-				this.event = null;
+				this.callback.accept(world, this, this.event.get(), this.distance);
+				this.event = Optional.empty();
 			}
 		}
+
 	}
 
 	@Override
@@ -68,158 +60,73 @@ public class RedstoneSculkSensorListener implements GameEventListener {
 	}
 
 	@Override
-	public boolean listen(ServerWorld world, GameEvent.Message eventMessage) {
-		if (this.event != null) {
+	public boolean listen(World world, GameEvent event, @Nullable Entity entity, BlockPos pos) {
+		this.originSource = pos;
+		if (!this.shouldActivate(event, entity)) {
 			return false;
 		} else {
-			GameEvent gameEvent = eventMessage.getEvent();
-			GameEvent.Context context = eventMessage.getContext();
-			if (!this.callback.isValid(gameEvent, context)) {
+			Optional<BlockPos> optional = this.positionSource.getPos(world);
+			if (optional.isEmpty()) {
 				return false;
 			} else {
-				Optional<Vec3d> optional = this.positionSource.getPos(world);
-				if (optional.isEmpty()) {
+				BlockPos blockPos = optional.get();
+				if (!this.callback.accepts(world, this, pos, event, entity)) {
+					return false;
+				} else if (this.isOccluded(world, pos, blockPos)) {
 					return false;
 				} else {
-					Vec3d vec3d = eventMessage.getSourcePos();
-					this.originSource = new BlockPos(vec3d);
-					Vec3d vec3d2 = optional.get();
-					if (!this.callback.accepts(world, this, new BlockPos(vec3d), gameEvent, context)) {
-						return false;
-					} else if (this.isOccluded(world, vec3d, vec3d2)) {
-						return false;
-					} else {
-						this.listen(world, gameEvent, context, vec3d, vec3d2);
-						return true;
-					}
-				}
-			}
-		}
-	}
-
-	private void listen(ServerWorld world, GameEvent event, GameEvent.Context context, Vec3d start, Vec3d end) {
-		this.distance = (float) start.distanceTo(end);
-		this.event = new RecievedEvent(event, this.distance, start, context.sourceEntity());
-		this.delay = MathHelper.floor(this.distance);
-		world.spawnParticles(new VibrationParticleEffect(this.positionSource, this.delay), start.x, start.y, start.z, 1, 0.0, 0.0, 0.0, 0.0);
-		this.callback.onListen();
-	}
-
-	private boolean isOccluded(World world, Vec3d posA, Vec3d posB) {
-		BlockPos pos = new BlockPos(posA);
-		BlockPos sourcePos = new BlockPos(posB);
-		return world.raycast(new BlockStateRaycastContext(Vec3d.ofCenter(pos), Vec3d.ofCenter(sourcePos), state -> state.isIn(BlockTags.OCCLUDES_VIBRATION_SIGNALS)))
-			.getType()
-			== HitResult.Type.BLOCK;
-	}
-
-	public interface Callback {
-		default TagKey<GameEvent> getTag() {
-			return GameEventTags.VIBRATIONS;
-		}
-
-		default boolean triggersAvoidCriterion() {
-			return false;
-		}
-
-		default boolean isValid(GameEvent event, GameEvent.Context context) {
-			if (!event.isIn(this.getTag())) {
-				return false;
-			} else {
-				Entity entity = context.sourceEntity();
-				if (entity != null) {
-					if (entity.isSpectator()) {
-						return false;
-					}
-
-					if (entity.bypassesSteppingEffects() && event.isIn(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) {
-						if (this.triggersAvoidCriterion() && entity instanceof ServerPlayerEntity) {
-							ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) entity;
-							Criteria.AVOID_VIBRATION.trigger(serverPlayerEntity);
-						}
-
-						return false;
-					}
-
-					if (entity.dampensVibrations()) {
-						return false;
-					}
-				}
-
-				if (context.affectedState() != null) {
-					return !context.affectedState().isIn(BlockTags.DAMPENS_VIBRATIONS);
-				} else {
+					this.listen(world, event, pos, blockPos);
 					return true;
 				}
 			}
 		}
-
-		boolean accepts(ServerWorld world, GameEventListener listener, BlockPos pos, GameEvent event, GameEvent.Context context);
-
-		void accept(ServerWorld world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity, @Nullable Entity sourceEntity, float distance);
-
-		default void onListen() {}
 	}
 
-	public record RecievedEvent(GameEvent gameEvent, float distance, Vec3d pos, @Nullable UUID source,
-								@Nullable UUID projectileOwnerUuid, @Nullable Entity entity) {
+	private boolean shouldActivate(GameEvent event, @Nullable Entity entity) {
+		if (this.event.isPresent()) {
+			return false;
+		} else if (!event.method_40156(GameEventTags.VIBRATIONS)) {
+			return false;
+		} else {
+			if (entity != null) {
+				if (event.method_40156(GameEventTags.IGNORE_VIBRATIONS_SNEAKING) && entity.bypassesSteppingEffects()) {
+					return false;
+				}
 
-		public RecievedEvent(GameEvent gameEvent, float distance, Vec3d pos, @Nullable Entity entity) {
-			this(gameEvent, distance, pos, entity == null ? null : entity.getUuid(), getProjectileOwnerUuid(entity), entity);
-		}
-
-		@Nullable
-		private static UUID getProjectileOwnerUuid(@Nullable Entity entity) {
-			if (entity instanceof ProjectileEntity projectileEntity) {
-				if (projectileEntity.getOwner() != null) {
-					return projectileEntity.getOwner().getUuid();
+				if (entity.occludeVibrationSignals()) {
+					return false;
 				}
 			}
 
-			return null;
+			return entity == null || !entity.isSpectator();
+		}
+	}
+
+	private void listen(World world, GameEvent event, BlockPos pos, BlockPos sourcePos) {
+		this.event = Optional.of(event);
+		if (world instanceof ServerWorld) {
+			this.distance = MathHelper.floor(Math.sqrt(pos.getSquaredDistance(sourcePos)));
+			this.delay = this.distance;
+			((ServerWorld) world).sendVibrationPacket(new Vibration(pos, this.positionSource, this.delay));
 		}
 
-		public Optional<Entity> getEntity(ServerWorld world) {
-			return Optional.ofNullable(this.entity).or(() -> {
-				Optional<UUID> var10000 = Optional.ofNullable(this.source);
-				Objects.requireNonNull(world);
-				return var10000.map(world::getEntity);
-			});
-		}
+	}
 
-		public Optional<Entity> getProjectileOwner(ServerWorld world) {
-			return this.getEntity(world).filter((entity) -> entity instanceof ProjectileEntity).map((entity) -> (ProjectileEntity) entity).map(ProjectileEntity::getOwner).or(() -> {
-				Optional<UUID> var10000 = Optional.ofNullable(this.projectileOwnerUuid);
-				Objects.requireNonNull(world);
-				return var10000.map(world::getEntity);
-			});
-		}
+	private boolean isOccluded(World world, BlockPos pos, BlockPos sourcePos) {
+		return world.raycast(new BlockStateRaycastContext(Vec3d.ofCenter(pos), Vec3d.ofCenter(sourcePos), state -> state.isIn(BlockTags.OCCLUDES_VIBRATION_SIGNALS)))
+				.getType()
+				== HitResult.Type.BLOCK;
+	}
 
-		public GameEvent gameEvent() {
-			return this.gameEvent;
-		}
+	public interface Callback {
+		/**
+		 * Returns whether the callback wants to accept this event.
+		 */
+		boolean accepts(World world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity);
 
-		public float distance() {
-			return this.distance;
-		}
-
-		public Vec3d pos() {
-			return this.pos;
-		}
-
-		@Nullable
-		public UUID source() {
-			return this.source;
-		}
-
-		@Nullable
-		public UUID projectileOwnerUuid() {
-			return this.projectileOwnerUuid;
-		}
-
-		@Nullable
-		public Entity entity() {
-			return this.entity;
-		}
+		/**
+		 * Accepts a game event after delay.
+		 */
+		void accept(World world, GameEventListener listener, GameEvent event, int distance);
 	}
 }
