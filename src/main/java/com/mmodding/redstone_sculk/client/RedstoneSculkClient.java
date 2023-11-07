@@ -1,16 +1,17 @@
 package com.mmodding.redstone_sculk.client;
 
+import com.mmodding.mmodding_lib.library.base.AdvancedModContainer;
 import com.mmodding.mmodding_lib.library.base.MModdingClientModInitializer;
+import com.mmodding.mmodding_lib.library.config.Config;
 import com.mmodding.mmodding_lib.library.initializers.ClientElementsInitializer;
 import com.mmodding.redstone_sculk.init.Blocks;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import org.quiltmc.loader.api.ModContainer;
+import org.jetbrains.annotations.Nullable;
+import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public class RedstoneSculkClient implements MModdingClientModInitializer {
 
 	@Override
@@ -20,8 +21,12 @@ public class RedstoneSculkClient implements MModdingClientModInitializer {
 		return clientInitializers;
 	}
 
+	@Nullable
 	@Override
-	public void onInitializeClient(ModContainer modContainer) {
-		MModdingClientModInitializer.super.onInitializeClient(modContainer);
+	public Config getClientConfig() {
+		return null;
 	}
+
+	@Override
+	public void onInitializeClient(AdvancedModContainer modContainer) {}
 }
