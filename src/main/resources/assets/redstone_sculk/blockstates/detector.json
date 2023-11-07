@@ -1,0 +1,73 @@
+{
+  "variants": {
+    "facing=down,detection=0": {
+      "model": "redstone_sculk:block/detector",
+      "x": 90
+    },
+    "facing=down,detection=1": {
+      "model": "redstone_sculk:block/detector",
+      "x": 90
+    },
+    "facing=down,detection=2": {
+      "model": "redstone_sculk:block/detector",
+      "x": 90
+    },
+    "facing=east,detection=0": {
+      "model": "redstone_sculk:block/detector",
+      "y": 90
+    },
+    "facing=east,detection=1": {
+      "model": "redstone_sculk:block/detector",
+      "y": 90
+    },
+    "facing=east,detection=2": {
+      "model": "redstone_sculk:block/detector",
+      "y": 90
+    },
+    "facing=north,detection=0": {
+      "model": "redstone_sculk:block/detector"
+    },
+    "facing=north,detection=1": {
+      "model": "redstone_sculk:block/detector"
+    },
+    "facing=north,detection=2": {
+      "model": "redstone_sculk:block/detector"
+    },
+    "facing=south,detection=0": {
+      "model": "redstone_sculk:block/detector",
+      "y": 180
+    },
+    "facing=south,detection=1": {
+      "model": "redstone_sculk:block/detector",
+      "y": 180
+    },
+    "facing=south,detection=2": {
+      "model": "redstone_sculk:block/detector",
+      "y": 180
+    },
+    "facing=up,detection=0": {
+      "model": "redstone_sculk:block/detector",
+      "x": 270
+    },
+    "facing=up,detection=1": {
+      "model": "redstone_sculk:block/detector",
+      "x": 270
+    },
+    "facing=up,detection=2": {
+      "model": "redstone_sculk:block/detector",
+      "x": 270
+    },
+    "facing=west,detection=0": {
+      "model": "redstone_sculk:block/detector",
+      "y": 270
+    },
+    "facing=west,detection=1": {
+      "model": "redstone_sculk:block/detector",
+      "y": 270
+    },
+    "facing=west,detection=2": {
+      "model": "redstone_sculk:block/detector",
+      "y": 270
+    }
+  }
+}
