@@ -9,7 +9,8 @@
 			"description": "None",
 			"contributors": {
 				"MModding Team": "Owner",
-				"Max094_Reikeb": "Author"
+				"Max094_Reikeb": "Author, Developer",
+				"FirstMegaGame4": "Developer"
 			},
 			"contact": {
 				"homepage": "https://mmodding.github.io/",
@@ -35,10 +36,6 @@
 			{
 				"id": "minecraft",
 				"versions": ">=1.18.2"
-			},
-			{
-				"id": "mmodding_lib",
-				"versions": ">=0.0.1-alpha"
 			}
 		]
 	},

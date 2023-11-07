@@ -8,13 +8,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.event.BlockPositionSource;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.listener.GameEventListener;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class RedstoneSculkSensorBlockEntity extends BlockEntity implements RedstoneSculkSensorListener.Callback {
 
@@ -22,9 +21,9 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 	private int lastVibrationFrequency;
 
 	public RedstoneSculkSensorBlockEntity(BlockPos blockPos, BlockState blockState) {
-		super(BlockEntities.REDSTONE_SCULK_SENSOR_BLOCK_ENTITY.getBlockEntityTypeIfCreated(), blockPos, blockState);
+		super(BlockEntities.REDSTONE_SCULK_SENSOR, blockPos, blockState);
 		this.listener = new RedstoneSculkSensorListener(new BlockPositionSource(this.pos),
-				((RedstoneSculkSensorBlock) blockState.getBlock()).getRange(), this);
+			((RedstoneSculkSensorBlock) blockState.getBlock()).getRange(), this);
 	}
 
 	@Override
@@ -48,17 +47,18 @@ public class RedstoneSculkSensorBlockEntity extends BlockEntity implements Redst
 	}
 
 	@Override
-	public boolean accepts(World world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity) {
+	public boolean accepts(ServerWorld world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable GameEvent.Context context) {
 		return RedstoneSculkSensorBlock.isInactive(this.getCachedState()) &&
-				event == GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE;
+			event == GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE;
 	}
 
 	@Override
-	public void accept(World world, GameEventListener listener, GameEvent event, int distance) {
+	public void accept(ServerWorld world, GameEventListener listener, BlockPos pos, GameEvent event, @Nullable Entity entity, @Nullable Entity sourceEntity, float distance) {
 		BlockState blockState = this.getCachedState();
 		if (!world.isClient() && RedstoneSculkSensorBlock.isInactive(blockState)) {
 			this.lastVibrationFrequency = RedstoneSculkSensorBlock.FREQUENCIES.getInt(event);
-			RedstoneSculkSensorBlock.setActive(world, this.pos, blockState, world.getReceivedRedstonePower(listener.getPositionSource().getPos(world).get()));
+			RedstoneSculkSensorBlock.setActive(world, this.pos, blockState,
+				world.getReceivedRedstonePower(getEventListener().getOriginSource()));
 		}
 	}
 }
