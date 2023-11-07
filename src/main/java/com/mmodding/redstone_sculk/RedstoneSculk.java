@@ -8,6 +8,7 @@ import com.mmodding.mmodding_lib.library.utils.GameEventUtils;
 import com.mmodding.redstone_sculk.init.BlockEntities;
 import com.mmodding.redstone_sculk.init.Blocks;
 import com.mmodding.redstone_sculk.init.GameEvents;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -32,6 +33,14 @@ public class RedstoneSculk implements MModdingModInitializer {
 
 	@Override
 	public void onInitialize(AdvancedModContainer mod) {
-		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 20);
+		GameEventUtils.putGameEventInFrequencies(GameEvents.REDSTONE_SCULK_SENSOR_ACTIVATE, 15);
+	}
+
+	public static String id() {
+		return "redstone_sculk";
+	}
+
+	public static Identifier createId(String path) {
+		return new Identifier(RedstoneSculk.id(), path);
 	}
 }

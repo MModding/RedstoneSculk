@@ -13,9 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.event.BlockPositionSource;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.listener.GameEventListener;
+import net.minecraft.world.event.listener.SculkSensorListener;
 import org.jetbrains.annotations.Nullable;
 
-public class RedstoneSculkSensorBlockEntity extends BlockEntity implements RedstoneSculkSensorListener.Callback {
+public class RedstoneSculkSensorBlockEntity extends BlockEntity implements SculkSensorListener.Callback {
 
 	private final RedstoneSculkSensorListener listener;
 	private int lastVibrationFrequency;

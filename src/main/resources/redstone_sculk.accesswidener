@@ -1,0 +1,3 @@
+accessWidener v1 named
+
+accessible method net/minecraft/world/event/listener/SculkSensorListener listen (Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/event/GameEvent;Lnet/minecraft/world/event/GameEvent$Context;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)V

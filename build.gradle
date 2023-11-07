@@ -28,6 +28,10 @@ dependencies {
 	modImplementation libs.mmodding.lib
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/redstone_sculk.accesswidener")
+}
+
 processResources {
 	inputs.property "version", version
 

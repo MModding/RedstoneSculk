@@ -39,5 +39,6 @@
 			}
 		]
 	},
+	"access_widener" : "redstone_sculk.accesswidener",
 	"mixin": "redstone_sculk.mixins.json"
 }
