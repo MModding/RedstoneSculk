@@ -15,6 +15,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.random.RandomGenerator;
@@ -62,6 +63,17 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 		return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite().getOpposite());
 	}
 
+	private Pair<Pair<Direction, Direction>, Pair<Direction, Direction>> getSidePos(BlockState state) {
+		return switch (state.get(FACING)) {
+			case DOWN, UP ->
+				new Pair<>(new Pair<>(Direction.NORTH, Direction.SOUTH), new Pair<>(Direction.WEST, Direction.EAST));
+			case NORTH, SOUTH ->
+				new Pair<>(new Pair<>(Direction.WEST, Direction.EAST), new Pair<>(Direction.DOWN, Direction.UP));
+			case WEST, EAST ->
+				new Pair<>(new Pair<>(Direction.NORTH, Direction.SOUTH), new Pair<>(Direction.DOWN, Direction.UP));
+		};
+	}
+
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
 		BlockState sourceState = world.getBlockState(pos.offset(state.get(FACING)));
@@ -88,10 +100,15 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 	}
 
 	protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
-		Direction direction = state.get(FACING);
-		BlockPos blockPos = pos.offset(direction.getOpposite());
-		world.method_8492(blockPos, this, pos);
-		world.updateNeighborsExcept(blockPos, this, direction);
+		BlockPos side1Pos = pos.offset(getSidePos(state).getLeft().getLeft());
+		BlockPos side2Pos = pos.offset(getSidePos(state).getLeft().getRight());
+		BlockPos side3Pos = pos.offset(getSidePos(state).getRight().getLeft());
+		BlockPos side4Pos = pos.offset(getSidePos(state).getRight().getRight());
+		world.method_8492(side1Pos, this, pos);
+		world.method_8492(side2Pos, this, pos);
+		world.method_8492(side3Pos, this, pos);
+		world.method_8492(side4Pos, this, pos);
+		world.updateNeighborsExcept(pos.offset(state.get(FACING).getOpposite()), this, state.get(FACING));
 	}
 
 	@Override
@@ -126,8 +143,10 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 
 	@Override
 	public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-		return state.get(DETECTION) > 0 && (state.get(FACING) == direction.rotateYClockwise() ||
-			state.get(FACING) == direction.rotateYCounterclockwise()) ? (state.get(DETECTION) > 1 ? 15 : 8) : 0;
+		if ((state.get(FACING) != getSidePos(state).getLeft().getLeft() && state.get(FACING) != getSidePos(state).getLeft().getRight() &&
+			state.get(FACING) != getSidePos(state).getRight().getLeft() && state.get(FACING) != getSidePos(state).getRight().getRight()) ||
+			state.get(DETECTION) == 0) return 0;
+		return state.get(DETECTION) > 1 ? 15 : 8;
 	}
 
 	@Override
