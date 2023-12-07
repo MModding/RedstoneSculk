@@ -2,6 +2,8 @@ package com.mmodding.redstone_sculk.blocks;
 
 import com.mmodding.mmodding_lib.library.blocks.BlockRegistrable;
 import com.mmodding.mmodding_lib.library.blocks.BlockWithItem;
+import com.mmodding.mmodding_lib.library.utils.BiArrayList;
+import com.mmodding.mmodding_lib.library.utils.BiList;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,13 +17,13 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.random.RandomGenerator;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -63,15 +65,23 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 		return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite().getOpposite());
 	}
 
-	private Pair<Pair<Direction, Direction>, Pair<Direction, Direction>> getSidePos(BlockState state) {
-		return switch (state.get(FACING)) {
-			case DOWN, UP ->
-				new Pair<>(new Pair<>(Direction.NORTH, Direction.SOUTH), new Pair<>(Direction.WEST, Direction.EAST));
-			case NORTH, SOUTH ->
-				new Pair<>(new Pair<>(Direction.WEST, Direction.EAST), new Pair<>(Direction.DOWN, Direction.UP));
-			case WEST, EAST ->
-				new Pair<>(new Pair<>(Direction.NORTH, Direction.SOUTH), new Pair<>(Direction.DOWN, Direction.UP));
-		};
+	private BiList<Direction, Direction> getSidePos(BlockState state) {
+		BiList<Direction, Direction> biList = new BiArrayList<>();
+		switch (state.get(FACING)) {
+			case DOWN, UP -> {
+				biList.add(Direction.NORTH, Direction.SOUTH);
+				biList.add(Direction.WEST, Direction.EAST);
+			}
+			case NORTH, SOUTH -> {
+				biList.add(Direction.WEST, Direction.EAST);
+				biList.add(Direction.DOWN, Direction.UP);
+			}
+			case WEST, EAST -> {
+				biList.add(Direction.NORTH, Direction.SOUTH);
+				biList.add(Direction.DOWN, Direction.UP);
+			}
+		}
+		return biList;
 	}
 
 	@Override
@@ -100,10 +110,10 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 	}
 
 	protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
-		BlockPos side1Pos = pos.offset(getSidePos(state).getLeft().getLeft());
-		BlockPos side2Pos = pos.offset(getSidePos(state).getLeft().getRight());
-		BlockPos side3Pos = pos.offset(getSidePos(state).getRight().getLeft());
-		BlockPos side4Pos = pos.offset(getSidePos(state).getRight().getRight());
+		BlockPos side1Pos = pos.offset(getSidePos(state).getFirst(0));
+		BlockPos side2Pos = pos.offset(getSidePos(state).getSecond(0));
+		BlockPos side3Pos = pos.offset(getSidePos(state).getFirst(1));
+		BlockPos side4Pos = pos.offset(getSidePos(state).getSecond(1));
 		world.method_8492(side1Pos, this, pos);
 		world.method_8492(side2Pos, this, pos);
 		world.method_8492(side3Pos, this, pos);
@@ -143,9 +153,9 @@ public class DetectorBlock extends FacingBlock implements BlockRegistrable, Bloc
 
 	@Override
 	public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-		if ((state.get(FACING) != getSidePos(state).getLeft().getLeft() && state.get(FACING) != getSidePos(state).getLeft().getRight() &&
-			state.get(FACING) != getSidePos(state).getRight().getLeft() && state.get(FACING) != getSidePos(state).getRight().getRight()) ||
-			state.get(DETECTION) == 0) return 0;
+		if ((!getSidePos(state).contains(new ImmutablePair<>(direction, direction.getOpposite()))
+			&& !getSidePos(state).contains(new ImmutablePair<>(direction.getOpposite(), direction)))
+			|| state.get(DETECTION) == 0) return 0;
 		return state.get(DETECTION) > 1 ? 15 : 8;
 	}
 
